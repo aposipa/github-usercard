@@ -24,8 +24,27 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
-
+const followersArray = ["teaguehannam", "Cybersck", "ardissam0", "idongessien", "dakoriah", "frankie95667", "ArtmanG", "ScottSmith23" ];
+// axios.get('https://api.github.com/users/aposipa/followers')
+//   .then(response => {
+//     // console.log(response.data);
+//     response.data.map(item =>{
+//     followersArray.push(item)
+//   })
+//   });
+  followersArray.map(users => {
+    console.log(users);
+    axios.get(`https://api.github.com/users/${users}`)
+  .then(response =>{
+    // console.log(response);
+    let newUser = createCard(response.data)
+    newCard.append(newUser);
+  })
+  
+  .catch(error =>{
+    console.log("Data was not retured", error)
+  });
+})
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
 
@@ -45,6 +64,60 @@ const followersArray = [];
 </div>
 
 */
+function createCard(object){
+  for (let key in object) {
+    if (object[key] == null | undefined) {
+      object[key] = 'User has not provided a '+key+'.';
+    }
+    if (typeof object[key] == Number) {
+      object[key] = object[key].toString();
+    }
+  }
+  const card = document.createElement('div');
+  const newImg = document.createElement('img');
+  const cardInfo = document.createElement('div');
+  const name = document.createElement('h3');
+  const userName = document.createElement('p');
+  const location = document.createElement('p');
+  const profile = document.createElement('p');
+  const profileAddress = document.createElement('a');
+  const followers = document.createElement('p');
+  const following = document.createElement('p');
+  const bio = document.createElement('p');  
+//end created elements
+
+card.append(newImg);
+card.append(cardInfo);
+cardInfo.append(name);
+cardInfo.append(userName);
+cardInfo.append(location);
+cardInfo.append(profile);
+profile.append(profileAddress);
+cardInfo.append(followers);
+cardInfo.append(following);
+cardInfo.append(bio);
+//end creating structure
+
+newImg.src = object.avatar_url;
+name.textContent = object.name;
+userName.textContent = object.login;
+location.textContent = 'Location: ' + object.location;
+profileAddress.href = object.url;
+followers.textContent = 'Followers: ' + object.followers;
+following.textContent = 'Following: ' + object.following;
+bio.textContent = 'Bio: ' + object.bio;
+
+//end creating text content
+card.classList.add('card');
+cardInfo.classList.add('card-info');
+name.classList.add('name');
+userName.classList.add('username');
+//end creating class names
+
+return card;
+}
+
+const newCard = document.querySelector('.cards');
 
 /* List of LS Instructors Github username's: 
   tetondan
@@ -53,3 +126,13 @@ const followersArray = [];
   luishrd
   bigknell
 */
+axios.get('https://api.github.com/users/aposipa')
+  .then(response =>{
+    // console.log(response);
+    let newUser = createCard(response.data)
+    newCard.append(newUser);
+   
+})
+.catch(error =>{
+  console.log("Data was not retured", error)
+});
